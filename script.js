@@ -558,15 +558,36 @@ function openLightbox(index) {
     updateLightbox();
     document.getElementById('lightbox').classList.add('active');
     document.body.style.overflow = 'hidden';
+    
+    // 根据屏幕方向调整布局
+    const lightboxContent = document.querySelector('.lightbox-content');
+    if (window.innerWidth <= 767 && window.innerHeight > window.innerWidth) {
+        lightboxContent.classList.add('portrait-mode');
+    } else {
+        lightboxContent.classList.remove('portrait-mode');
+    }
 }
 
 function updateLightbox() {
     const page = filteredPages[currentLightboxIndex];
     if (!page) return;
     const img = document.getElementById('lightbox-img');
-    img.src = `images/desktop/${page.file}`;
-    img.srcset = `images/mobile/${page.file} 800w, images/desktop/${page.file} 1920w`;
-    img.sizes = '(max-width: 768px) 800px, 1920px';
+    
+    // 根据屏幕大小和方向选择合适的图片
+    const isPortrait = window.innerHeight > window.innerWidth;
+    const isMobile = window.innerWidth <= 768;
+    
+    if (isMobile && isPortrait) {
+        // 手机竖屏：使用手机版图片
+        img.src = `images/mobile/${page.file}`;
+        img.sizes = '95vw';
+    } else {
+        // 电脑或横屏：使用响应式图片
+        img.src = `images/desktop/${page.file}`;
+        img.srcset = `images/mobile/${page.file} 800w, images/desktop/${page.file} 1920w`;
+        img.sizes = '(max-width: 768px) 800px, 1920px';
+    }
+    
     document.getElementById('lightbox-title').textContent = page.title;
     document.getElementById('lightbox-meta').textContent = `第 ${page.page} 页 · ${page.chapter}`;
     document.getElementById('lightbox-desc').innerHTML = page.works.map(w => `
@@ -609,18 +630,54 @@ function clearFilters() {
     renderGallery();
 }
 
+// ========== 响应式适配 ==========
+let currentOrientation = 'landscape';
+
+function detectOrientation() {
+    const isPortrait = window.innerHeight > window.innerWidth;
+    currentOrientation = isPortrait ? 'portrait' : 'landscape';
+    document.body.setAttribute('data-orientation', currentOrientation);
+    
+    // 更新 Lightbox 布局
+    const lightboxContent = document.querySelector('.lightbox-content');
+    if (lightboxContent) {
+        if (window.innerWidth <= 767 && isPortrait) {
+            lightboxContent.classList.add('portrait-mode');
+        } else {
+            lightboxContent.classList.remove('portrait-mode');
+        }
+    }
+}
+
+function handleResize() {
+    detectOrientation();
+    // 动态调整网格列数
+    const grid = document.querySelector('.gallery-grid');
+    if (grid) {
+        const width = window.innerWidth;
+        if (width >= 1200) grid.style.gridTemplateColumns = 'repeat(5, 1fr)';
+        else if (width >= 900) grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
+        else if (width >= 600) grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+        else if (width >= 400) grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+        else grid.style.gridTemplateColumns = '1fr';
+    }
+}
+
 // ========== 事件监听 ==========
 function setupEventListeners() {
+    // 搜索和筛选
     document.getElementById('search-input').addEventListener('input', e => { currentFilters.search = e.target.value; renderGallery(); });
     document.getElementById('filter-chapter').addEventListener('change', applyFilters);
     document.getElementById('filter-location').addEventListener('change', applyFilters);
     document.getElementById('filter-type').addEventListener('change', applyFilters);
     document.getElementById('filter-year').addEventListener('change', applyFilters);
     
+    // 视图切换
     document.querySelectorAll('.view-btn').forEach(btn => {
         btn.addEventListener('click', () => switchView(btn.dataset.view));
     });
     
+    // 键盘导航
     document.addEventListener('keydown', e => {
         if (document.getElementById('lightbox').classList.contains('active')) {
             if (e.key === 'ArrowLeft') navigateLightbox(-1);
@@ -628,7 +685,22 @@ function setupEventListeners() {
             if (e.key === 'Escape') closeLightbox();
         }
     });
+    
+    // 点击遮罩关闭
     document.getElementById('lightbox').addEventListener('click', e => { if (e.target === e.currentTarget) closeLightbox(); });
+    
+    // 屏幕方向和尺寸变化
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+            detectOrientation();
+            handleResize();
+        }, 100);
+    });
+    
+    // 初始检测
+    detectOrientation();
+    handleResize();
 }
 
 function setupScrollAnimations() {

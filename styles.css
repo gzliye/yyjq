@@ -647,49 +647,163 @@ body {
 }
 
 /* ========== 响应式设计 ========== */
-@media (max-width: 1024px) {
-    .filter-row {
-        gap: 10px;
-    }
-    
-    .search-wrapper {
-        max-width: none;
-        flex: 1 1 100%;
-    }
+
+/* 大屏幕桌面 (横屏电脑 > 1200px) */
+@media (min-width: 1200px) {
+    .container { max-width: 1600px; }
+    .gallery-grid { grid-template-columns: repeat(5, 1fr); gap: 20px; }
+    .lightbox-content { gap: 40px; }
+    .lightbox-content img { max-width: 65vw; }
+    .lightbox-info { max-width: 400px; }
 }
 
-@media (max-width: 768px) {
-    .hero { min-height: 500px; }
+/* 中等桌面 (1024px - 1199px) */
+@media (min-width: 1024px) and (max-width: 1199px) {
+    .gallery-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* 平板横屏 */
+@media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
+    .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+    .lightbox-content img { max-width: 55vw; }
+}
+
+/* 平板竖屏 */
+@media (min-width: 768px) and (max-width: 1023px) and (orientation: portrait) {
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* 手机横屏 */
+@media (max-width: 767px) and (orientation: landscape) {
+    .hero { min-height: 100vh; }
+    .title { font-size: 2rem; letter-spacing: 0.1em; }
+    .subtitle { font-size: 1rem; letter-spacing: 0.15em; }
+    
+    .filter-bar { padding: 8px 0; }
+    .filter-row { gap: 6px; }
+    .search-wrapper { min-width: 150px; }
+    
+    .gallery-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .gallery-item { aspect-ratio: 4/3; }
+    
+    /* Lightbox 横屏手机优化 */
+    .lightbox-content {
+        flex-direction: row;
+        max-width: 95vw;
+        max-height: 90vh;
+        gap: 20px;
+    }
+    .lightbox-content img {
+        max-width: 50vw;
+        max-height: 80vh;
+    }
+    .lightbox-info {
+        max-width: 280px;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    .lightbox-info h3 { font-size: 1.1rem; }
+    .lightbox-prev, .lightbox-next { padding: 15px 10px; font-size: 20px; }
+    .lightbox-close { top: 10px; right: 15px; font-size: 30px; }
+}
+
+/* 手机竖屏 */
+@media (max-width: 767px) and (orientation: portrait) {
+    .hero { min-height: 100vh; min-height: 100dvh; }
     .title { letter-spacing: 0.15em; }
     .subtitle { letter-spacing: 0.2em; }
     .intro { padding: 50px 0; }
     .intro p { font-size: 1rem; padding: 0 15px; }
-
+    
     .filter-bar { padding: 12px 0; }
     .filter-row { gap: 8px; }
     .filter-row select { padding: 7px 10px; font-size: 0.8rem; }
     .clear-btn { padding: 7px 12px; font-size: 0.8rem; }
     .result-count { flex: 1 1 100%; margin-left: 0; text-align: center; margin-top: 8px; }
-
+    
     .gallery-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
     }
-
+    .gallery-item { aspect-ratio: 4/3; }
+    
+    /* Lightbox 竖屏手机优化 - 改为上下布局 */
+    .lightbox-content {
+        flex-direction: column;
+        max-width: 95vw;
+        max-height: 90vh;
+        gap: 0;
+        padding: 50px 10px 20px;
+        overflow-y: auto;
+    }
+    .lightbox-content img {
+        max-width: 95vw;
+        max-height: 50vh;
+        max-height: 50dvh;
+    }
+    .lightbox-info {
+        max-width: 95vw;
+        max-height: none;
+        padding: 15px;
+        text-align: center;
+    }
+    .lightbox-info h3 { font-size: 1.1rem; text-align: center; }
+    .lightbox-works .work-item { text-align: left; }
+    
     .lightbox-prev, .lightbox-next {
         padding: 12px 8px;
-        font-size: 22px;
+        font-size: 20px;
+        top: 45%;
     }
     .lightbox-prev { left: 5px; }
     .lightbox-next { right: 5px; }
-    
-    .lightbox-info { padding: 0 15px; }
-    .lightbox-info h3 { font-size: 1.2rem; }
+    .lightbox-close { top: 10px; right: 10px; font-size: 28px; }
 }
 
-@media (max-width: 480px) {
+/* 小屏手机竖屏 */
+@media (max-width: 400px) and (orientation: portrait) {
+    .gallery-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .filter-row select { padding: 6px 8px; font-size: 0.75rem; }
+    .title { font-size: 2rem; }
+    .subtitle { font-size: 1rem; }
+}
+
+/* 超小屏手机 */
+@media (max-width: 320px) {
     .gallery-grid { grid-template-columns: 1fr; }
-    .scroll-btn { padding: 12px 30px; font-size: 0.9rem; }
+    .filter-row { flex-direction: column; align-items: stretch; }
+    .filter-row select, .clear-btn { width: 100%; }
+}
+
+/* 安全区域适配 (iPhone X 及以上) */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .footer { padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+    
+    @media (max-width: 767px) and (orientation: portrait) {
+        .lightbox-content { padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+    }
+}
+
+/* 触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+    .gallery-item-overlay { opacity: 1; background: linear-gradient(transparent 40%, rgba(0, 0, 0, 0.75)); }
+    .gallery-item:hover { transform: none; }
+    .gallery-item:hover img { transform: none; }
+}
+
+/* 高分辨率屏幕 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .gallery-item img { image-rendering: -webkit-optimize-contrast; }
+}
+
+/* 减少动画 (用户偏好) */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    html { scroll-behavior: auto; }
 }
 
 /* ========== 滚动动画 ========== */
