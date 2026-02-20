@@ -1,0 +1,25 @@
+# 依赖
+node_modules/
+
+# 原始图片（不发布）
+ori-images/
+
+# 临时/测试文件
+*.test.jpg
+photogallery-*.jpg
+
+# 系统文件
+.DS_Store
+*.zip
+
+# 开发文件
+*.md
+!README.md
+影余寄情_*.html
+影余寄情_*.xlsx
+作品描述.md
+文件命名对照清单.md
+索引.md
+
+# dist目录（开发用）
+dist/

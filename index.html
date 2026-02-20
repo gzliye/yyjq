@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>影余寄情 - 李德胜摄影集</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 封面区域 -->
+    <header class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="title">影余寄情</h1>
+            <p class="subtitle">李德胜 摄影集</p>
+            <p class="quote">"此册既是个人岁月的印记，亦是家人厚爱之见证"</p>
+            <button class="scroll-btn" onclick="scrollToGallery()">浏览作品</button>
+        </div>
+    </header>
+
+    <!-- 前言 -->
+    <section class="intro">
+        <div class="container">
+            <h2>前言</h2>
+            <p>退休近二十载，摄影相伴，渐成日常。初执相机，只为留住庭前花开、邻里笑颜；渐渐地，镜头延伸至山河远阔、市井烟火，定格月落西窗的静谧，捕捉孩童奔跑的欢悦。</p>
+            <p>二十年光影流转，镜头里积攒了无数瞬间——有晨曦初露的温柔，有夕阳西下的壮美，有陌生人相逢的善意，也有家人团聚的温暖。这些画面，无关技巧，无关章法，只关乎一份热爱，一种对生活的温柔回望。</p>
+            <p>此册名"影余寄情"，取"影像留存余生之情"之意。愿这光影片段，藏于心、馈于后，成为岁月赠予家人的一份薄礼。</p>
+        </div>
+    </section>
+
+    <!-- 紧凑筛选栏 -->
+    <nav class="filter-bar" id="gallery">
+        <div class="container">
+            <div class="filter-row">
+                <!-- 搜索框 -->
+                <div class="search-wrapper">
+                    <input type="text" id="search-input" placeholder="搜索作品..." />
+                </div>
+                
+                <!-- 视图切换 -->
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="grid" title="网格视图">▦</button>
+                    <button class="view-btn" data-view="chapter" title="篇章视图">☰</button>
+                </div>
+                
+                <!-- 下拉筛选 -->
+                <select id="filter-chapter" onchange="applyFilters()">
+                    <option value="">全部篇章</option>
+                    <option value="第一篇">第一篇：山河风光</option>
+                    <option value="第二篇">第二篇：人文纪实</option>
+                    <option value="第三篇">第三篇：花鸟生态</option>
+                </select>
+                
+                <select id="filter-location" onchange="applyFilters()">
+                    <option value="">全部地点</option>
+                    <option value="天门">天门</option>
+                    <option value="北京">北京</option>
+                    <option value="上海">上海</option>
+                    <option value="秦皇岛">秦皇岛</option>
+                    <option value="新疆">新疆</option>
+                    <option value="台湾">台湾</option>
+                    <option value="加拿大">加拿大</option>
+                    <option value="泰国">泰国</option>
+                    <option value="欧洲">欧洲</option>
+                </select>
+                
+                <select id="filter-type" onchange="applyFilters()">
+                    <option value="">全部类型</option>
+                    <option value="风光摄影">风光摄影</option>
+                    <option value="城市风光">城市风光</option>
+                    <option value="人文纪实">人文纪实</option>
+                    <option value="家庭纪实">家庭纪实</option>
+                    <option value="艺术摄影">艺术摄影</option>
+                    <option value="生态摄影">生态摄影</option>
+                    <option value="夜景">夜景</option>
+                </select>
+                
+                <select id="filter-year" onchange="applyFilters()">
+                    <option value="">全部年份</option>
+                    <option value="2001">2001</option>
+                    <option value="2009">2009</option>
+                    <option value="2010">2010</option>
+                    <option value="2012">2012</option>
+                    <option value="2013">2013</option>
+                    <option value="2014">2014</option>
+                    <option value="2015">2015</option>
+                    <option value="2016">2016</option>
+                    <option value="2017">2017</option>
+                    <option value="2018">2018</option>
+                    <option value="2019">2019</option>
+                    <option value="2020">2020</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                </select>
+                
+                <button class="clear-btn" onclick="clearFilters()">清除筛选</button>
+                
+                <span class="result-count" id="results-count">共 81 页</span>
+            </div>
+            
+            <!-- 键盘快捷键提示 -->
+            <div class="keyboard-hints">
+                <span>快捷键：</span>
+                <kbd>←</kbd><kbd>→</kbd> 切换图片
+                <kbd>Esc</kbd> 关闭
+            </div>
+        </div>
+    </nav>
+
+    <!-- 相册区域 -->
+    <section class="gallery-section">
+        <div class="container">
+            <!-- 网格视图 -->
+            <div class="gallery-grid" id="gallery-grid"></div>
+            
+            <!-- 篇章视图 -->
+            <div class="chapter-view" id="chapter-view" style="display: none;">
+                <!-- 第一篇 -->
+                <div class="chapter-section" data-chapter="第一篇">
+                    <div class="chapter-header" onclick="toggleChapter('第一篇')">
+                        <h2><span class="chapter-icon">🏔️</span> 第一篇：步履赴山河</h2>
+                        <p class="chapter-subtitle">光影记远途</p>
+                        <span class="chapter-count" id="count-第一篇">0 幅</span>
+                        <span class="chapter-toggle">▼</span>
+                    </div>
+                    <div class="chapter-content" id="content-第一篇"></div>
+                </div>
+                
+                <!-- 第二篇 -->
+                <div class="chapter-section" data-chapter="第二篇">
+                    <div class="chapter-header" onclick="toggleChapter('第二篇')">
+                        <h2><span class="chapter-icon">👥</span> 第二篇：笑泪皆入镜</h2>
+                        <p class="chapter-subtitle">百态见真情</p>
+                        <span class="chapter-count" id="count-第二篇">0 幅</span>
+                        <span class="chapter-toggle">▼</span>
+                    </div>
+                    <div class="chapter-content" id="content-第二篇"></div>
+                </div>
+                
+                <!-- 第三篇 -->
+                <div class="chapter-section" data-chapter="第三篇">
+                    <div class="chapter-header" onclick="toggleChapter('第三篇')">
+                        <h2><span class="chapter-icon">🌸</span> 第三篇：四时皆有景</h2>
+                        <p class="chapter-subtitle">花鸟尽含情</p>
+                        <span class="chapter-count" id="count-第三篇">0 幅</span>
+                        <span class="chapter-toggle">▼</span>
+                    </div>
+                    <div class="chapter-content" id="content-第三篇"></div>
+                </div>
+            </div>
+            
+            <div class="no-results" id="no-results" style="display: none;">
+                <p>没有找到符合条件的作品</p>
+                <button onclick="clearFilters()">清除筛选条件</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 图片查看器 -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <button class="lightbox-prev" onclick="navigateLightbox(-1)">&#10094;</button>
+        <button class="lightbox-next" onclick="navigateLightbox(1)">&#10095;</button>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" srcset="" sizes="(max-width: 768px) 800px, 1920px" alt="">
+            <div class="lightbox-info">
+                <p id="lightbox-meta" class="lightbox-meta"></p>
+                <h3 id="lightbox-title"></h3>
+                <div id="lightbox-desc" class="lightbox-works"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <p>镜里烟霞皆入册，柴痕映水见天真</p>
+            <p class="copyright">© 2026 李德胜《影余寄情》摄影集</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
